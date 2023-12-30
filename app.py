@@ -13,7 +13,70 @@ BLACK = (0,0,0)
 BLUE = (0,10,200)
 PIECEWHITE = (239,238,210)
 PIECEBLACK = (118,150,86)
-TURN = True
+
+class CursorClass:
+    ENTER = False
+    Pressed = 0
+    TURN = 2
+    def __init__(self,CursorPositionX,CursorPositionY):
+        self.CursorPositionX = CursorPositionX
+        self.CursorPositionY = CursorPositionY
+    def clear(self,Board):
+        for i in range(0,COLS):
+            for j in range(0,ROWS):
+                if Board[i][j] == '#':
+                    Board[i][j] = 0
+            
+        else:
+            return
+    def CanMove(self,Board):
+        if self.Pressed != '#':
+            self.clear(Board)
+        if self.TURN == self.Pressed:
+            if self.Pressed == 2:
+                if self.AntCursorPosition[0] != 0 and self.AntCursorPosition[0] != ROWS-1:
+                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] == 0:
+                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] = '#'
+                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] == 0:
+                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] = '#'
+                elif self.AntCursorPosition[0] == 0:
+                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] == 0:
+                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] = '#'
+                else:
+                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] == 0:
+                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] = '#'
+
+            if self.Pressed == 1:
+                if self.AntCursorPosition[0] != 0 and self.AntCursorPosition[0] !=ROWS-1:
+                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] == 0:
+                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] = '#'
+                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] == 0:
+                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] = '#'
+                elif self.AntCursorPosition[0] == 0:
+                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] == 0:
+                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] = '#'
+                else:
+                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] == 0:
+                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] = '#'
+
+    def Move(self,Board):
+        Grab = Board[self.AntCursorPosition[1]][self.AntCursorPosition[0]]
+        Board[self.AntCursorPosition[1]][self.AntCursorPosition[0]] = 0
+        Board[self.CursorPositionY][self.CursorPositionX] = Grab
+        self.clear(Board)
+        if self.TURN == 2:
+            self.TURN = 1
+        else:
+            self.TURN = 2
+
+
+
+    def Return(self,Board):
+        self.Pressed = Board[self.CursorPositionY][self.CursorPositionX]
+        if self.Pressed == '#':
+            self.Move(Board)
+        self.AntCursorPosition = (self.CursorPositionX,self.CursorPositionY)
+        self.CanMove(Board)
 
 #create an array for managing the logic of the board
 def CreateBoard():
@@ -46,23 +109,12 @@ def DrawBoard(screen,board,CURSORPOSITION_X,CURSORPOSITION_Y):
                 pygame.draw.circle(screen,PIECEBLACK,(col*SQUARE_SIZE+SQUARE_SIZE//2,row*SQUARE_SIZE+SQUARE_SIZE//2),CIRCLE_RADIUS)
             if board[row][col] == 2:
                 pygame.draw.circle(screen,PIECEWHITE,(col*SQUARE_SIZE+SQUARE_SIZE//2,row*SQUARE_SIZE+SQUARE_SIZE//2),CIRCLE_RADIUS)
-    
+            if board[row][col] == '#':
+                pygame.draw.circle(screen,(128,128,128),(col*SQUARE_SIZE+SQUARE_SIZE//2,row*SQUARE_SIZE+SQUARE_SIZE//2),CIRCLE_RADIUS/2)
+
     pygame.draw.rect(screen,BLUE,(CURSORPOSITION_X*SQUARE_SIZE,CURSORPOSITION_Y*SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE),3)
-#Manage the movement of the pieces
-def CursorPressed(CURSORPOSITION_X,CURSORPOSITION_Y,ENTER,board=None,AntCursorPositionX=None,AntCursorPositionY=None):
-    if board[AntCursorPositionY][AntCursorPositionX] != 0:
-        if ENTER == False:
-            ENTER = True
-            return (CURSORPOSITION_X,CURSORPOSITION_Y,ENTER)
-        if ENTER == True:
-            ENTER = False
-            Grab = board[AntCursorPositionY][AntCursorPositionX]
-            board[AntCursorPositionY][AntCursorPositionX] = 0
-            board[CURSORPOSITION_Y][CURSORPOSITION_X] = Grab 
-            return(CURSORPOSITION_X,CURSORPOSITION_Y,ENTER)
-    else:
-        ENTER = False
-        return (CURSORPOSITION_X,CURSORPOSITION_Y,ENTER)
+    
+
 
     
 def main():
@@ -71,32 +123,33 @@ def main():
     clock = pygame.time.Clock()
     running = True
     ENTER = False
-    CURSORPOSITION_X = ROWS//2
-    CURSORPOSITION_Y = COLS//2
     Board = CreateBoard()
-    antCURSORPOSITION_X = 0
-    antCURSORPOSITION_Y = 0
-
+    Cursor = CursorClass(ROWS//2,COLS//2)
     while running:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RETURN:
-                    antCURSORPOSITION_X,antCURSORPOSITION_Y,ENTER = CursorPressed(CURSORPOSITION_X,CURSORPOSITION_Y,ENTER,Board,antCURSORPOSITION_X,antCURSORPOSITION_Y)
-                    print(ENTER)
-                    print(antCURSORPOSITION_X,antCURSORPOSITION_Y)
+                    Cursor.Return(Board)
                 if event.key == pygame.K_a:
-                    CURSORPOSITION_X -= 1
+                    Cursor.CursorPositionX -= 1
+                    if Cursor.CursorPositionX == -1:
+                        Cursor.CursorPositionX = ROWS-1
                 if event.key == pygame.K_d:
-                    CURSORPOSITION_X += 1
+                    Cursor.CursorPositionX += 1
+                    if Cursor.CursorPositionX == ROWS:
+                        Cursor.CursorPositionX = 0
                 if event.key == pygame.K_s:
-                    CURSORPOSITION_Y += 1
+                    Cursor.CursorPositionY += 1
+                    if Cursor.CursorPositionY == COLS:
+                        Cursor.CursorPositionY = 0
                 if event.key == pygame.K_w:
-                    CURSORPOSITION_Y -= 1
-
+                    Cursor.CursorPositionY -= 1
+                    if Cursor.CursorPositionY == -1:
+                        Cursor.CursorPositionY = COLS-1
             if event.type == pygame.QUIT:
                 running = False
 
-        DrawBoard(screen,Board,CURSORPOSITION_X,CURSORPOSITION_Y)
+        DrawBoard(screen,Board,Cursor.CursorPositionX,Cursor.CursorPositionY)
         
         pygame.display.flip()
 
