@@ -64,11 +64,8 @@ class CursorClass:
         Board[self.AntCursorPosition[1]][self.AntCursorPosition[0]] = 0
         Board[self.CursorPositionY][self.CursorPositionX] = Grab
         self.clear(Board)
-        if self.TURN == 2:
-            self.TURN = 1
-        else:
-            self.TURN = 2
-
+        #this just returns 1 when the input(TURN) is 2 and 2 when the input is 1
+        self.TURN = 2**(-self.TURN+2)
 
 
     def Return(self,Board):
