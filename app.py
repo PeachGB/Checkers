@@ -29,36 +29,31 @@ class CursorClass:
             
         else:
             return
+    def ShowMove(self,Yplus,y,x,Board):
+        if x != 0 and x != ROWS-1:
+            if Board[y+Yplus][x+1] == 0:
+                Board[y+Yplus][x+1] = '#'
+            if Board[y+Yplus][x-1] == 0:
+                Board[y+Yplus][x-1] = '#'
+        elif x == 0:
+            if Board[y+Yplus][x+1] == 0:
+                Board[y+Yplus][x+1] = '#'
+        else:
+            if Board[y+Yplus][x-1] == 0:
+                Board[y+Yplus][x-1] = '#'
+
+
     def CanMove(self,Board):
+        x = self.AntCursorPosition[0]
+        y = self.AntCursorPosition[1]
         if self.Pressed != '#':
             self.clear(Board)
         if self.TURN == self.Pressed:
-            if self.Pressed == 2:
-                if self.AntCursorPosition[0] != 0 and self.AntCursorPosition[0] != ROWS-1:
-                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] == 0:
-                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] = '#'
-                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] == 0:
-                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] = '#'
-                elif self.AntCursorPosition[0] == 0:
-                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] == 0:
-                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]+1] = '#'
-                else:
-                    if Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] == 0:
-                        Board[self.AntCursorPosition[1]-1][self.AntCursorPosition[0]-1] = '#'
-
-            if self.Pressed == 1:
-                if self.AntCursorPosition[0] != 0 and self.AntCursorPosition[0] !=ROWS-1:
-                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] == 0:
-                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] = '#'
-                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] == 0:
-                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] = '#'
-                elif self.AntCursorPosition[0] == 0:
-                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] == 0:
-                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]+1] = '#'
-                else:
-                    if Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] == 0:
-                        Board[self.AntCursorPosition[1]+1][self.AntCursorPosition[0]-1] = '#'
-
+            match self.Pressed:
+                case 2:
+                    self.ShowMove(-1,y,x,Board)
+                case 1:
+                    self.ShowMove(1,y,x,Board)
     def Move(self,Board):
         Grab = Board[self.AntCursorPosition[1]][self.AntCursorPosition[0]]
         Board[self.AntCursorPosition[1]][self.AntCursorPosition[0]] = 0
@@ -125,24 +120,26 @@ def main():
     while running:
         for event in pygame.event.get():
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_RETURN:
-                    Cursor.Return(Board)
-                if event.key == pygame.K_a:
-                    Cursor.CursorPositionX -= 1
-                    if Cursor.CursorPositionX == -1:
-                        Cursor.CursorPositionX = ROWS-1
-                if event.key == pygame.K_d:
-                    Cursor.CursorPositionX += 1
-                    if Cursor.CursorPositionX == ROWS:
-                        Cursor.CursorPositionX = 0
-                if event.key == pygame.K_s:
-                    Cursor.CursorPositionY += 1
-                    if Cursor.CursorPositionY == COLS:
-                        Cursor.CursorPositionY = 0
-                if event.key == pygame.K_w:
-                    Cursor.CursorPositionY -= 1
-                    if Cursor.CursorPositionY == -1:
-                        Cursor.CursorPositionY = COLS-1
+                match event.key:
+                    case pygame.K_RETURN:
+                        Cursor.Return(Board)
+                    case pygame.K_a:
+                        Cursor.CursorPositionX -= 1
+                        if Cursor.CursorPositionX == -1:
+                            Cursor.CursorPositionX = ROWS-1
+                    case pygame.K_d:
+                         Cursor.CursorPositionX += 1
+                         if Cursor.CursorPositionX == ROWS:
+                             Cursor.CursorPositionX = 0
+                    case pygame.K_s:
+                         if event.key == pygame.K_s:
+                             Cursor.CursorPositionY += 1
+                             if Cursor.CursorPositionY == COLS:
+                                 Cursor.CursorPositionY = 0
+                    case pygame.K_w:
+                        Cursor.CursorPositionY -= 1
+                        if Cursor.CursorPositionY == -1:
+                            Cursor.CursorPositionY = COLS-1
             if event.type == pygame.QUIT:
                 running = False
 
@@ -153,7 +150,6 @@ def main():
         clock.tick(60)
 
     pygame.quit()
-    print(Board)
 
 if __name__ == '__main__':
     main()
