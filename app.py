@@ -30,7 +30,7 @@ class CursorClass:
         else:
             return
     def ShowMove(self,Yplus,y,x,Board):
-        if x != 0 and x != ROWS-1:
+        if x not in (0, ROWS-1):
             if Board[y+Yplus][x+1] == 0:
                 Board[y+Yplus][x+1] = '#'
             if Board[y+Yplus][x-1] == 0:
