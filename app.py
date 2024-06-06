@@ -21,7 +21,8 @@ class CursorClass:
     def __init__(self,CursorPositionX,CursorPositionY):
         self.CursorPositionX = CursorPositionX
         self.CursorPositionY = CursorPositionY
-    def clear(self,Board):
+    @staticmethod
+    def clear(Board):
         for i in range(0,COLS):
             for j in range(0,ROWS):
                 if Board[i][j] == '#':
@@ -29,7 +30,8 @@ class CursorClass:
 
         else:
             return
-    def ShowMove(self,Yplus,y,x,Board):
+    @staticmethod
+    def ShowMove(Yplus,y,x,Board):
         if x not in (0, ROWS-1):
             if Board[y+Yplus][x+1] == 0:
                 Board[y+Yplus][x+1] = '#'
