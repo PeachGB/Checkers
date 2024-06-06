@@ -26,7 +26,7 @@ class CursorClass:
             for j in range(0,ROWS):
                 if Board[i][j] == '#':
                     Board[i][j] = 0
-            
+
         else:
             return
     def ShowMove(self,Yplus,y,x,Board):
@@ -105,10 +105,10 @@ def DrawBoard(screen,board,CURSORPOSITION_X,CURSORPOSITION_Y):
                 pygame.draw.circle(screen,(128,128,128),(col*SQUARE_SIZE+SQUARE_SIZE//2,row*SQUARE_SIZE+SQUARE_SIZE//2),CIRCLE_RADIUS/2)
 
     pygame.draw.rect(screen,BLUE,(CURSORPOSITION_X*SQUARE_SIZE,CURSORPOSITION_Y*SQUARE_SIZE,SQUARE_SIZE,SQUARE_SIZE),3)
-    
 
 
-    
+
+
 def main():
     pygame.init()
     screen = pygame.display.set_mode((HEIGHT,WIDTH))
@@ -144,7 +144,7 @@ def main():
                 running = False
 
         DrawBoard(screen,Board,Cursor.CursorPositionX,Cursor.CursorPositionY)
-        
+
         pygame.display.flip()
 
         clock.tick(60)
@@ -153,4 +153,4 @@ def main():
 
 if __name__ == '__main__':
     main()
-    
+
