@@ -27,8 +27,8 @@ class CursorClass:
                 if Board[i][j] == '#':
                     Board[i][j] = 0
             
-        else:
-            return
+        
+        return
     def ShowMove(self,Yplus,y,x,Board):
         if x != 0 and x != ROWS-1:
             if Board[y+Yplus][x+1] == 0:
